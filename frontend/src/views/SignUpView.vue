@@ -43,7 +43,7 @@
 
       <div class="form-group">
         <label for="phone">핸드폰 번호</label>
-        <input type="tel" id="phone" v-model.trim="phone" required pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" placeholder="000-0000-0000">
+        <input type="tel" id="phone" v-model.trim="phone" placeholder="01011112222">
       </div>
 
       
@@ -73,7 +73,7 @@ const signUp = function () {
     nickname: nickname.value,
     email: email.value,
     age: age.value,
-    gender: gender.value,
+    gender: gender.value === 'male' ? 'M' : 'F',
     phone: phone.value,
     password1: password1.value,
     password2: password2.value
@@ -85,7 +85,7 @@ const signUp = function () {
 
 <style scoped>
 .signup-container {
-  width: 70%;
+  width: 40%;
   margin: 50px auto;
   padding: 20px;
   background-color: #f0f8ff;
