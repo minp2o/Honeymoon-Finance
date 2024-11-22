@@ -123,3 +123,5 @@ def exchange_rate (request):
     serializer = ExchangeRateSerializer(exist_response, many=True)
     return Response(serializer.data)
 
+
+

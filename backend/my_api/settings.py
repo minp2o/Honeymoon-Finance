@@ -25,6 +25,10 @@ SECRET_KEY = (
     'django-insecure-@fn#327r=8uv%&a25(l(jc-e5ir*pu)v_%cyy*l%u@o)(^fnzs'
 )
 
+
+# 금감원 API 키
+API_KEY = os.getenv('API_KEY')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -35,7 +39,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'articles',
     'accounts',
-    
+    'fin_ins',
+    'exchange_rate',
     'rest_framework',
     'rest_framework.authtoken',
     

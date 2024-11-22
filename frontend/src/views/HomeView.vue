@@ -12,6 +12,8 @@
       
       <!-- <router-link to="/compare/deposit" class="action-button">
         금융 상품 확인하러가기
+      <!-- <router-link to="/compare/deposit" class="action-button"> -->
+        <!-- 금융 상품 확인하러가기
       </router-link> -->
     </div>
   </div>
