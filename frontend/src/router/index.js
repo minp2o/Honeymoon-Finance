@@ -62,6 +62,11 @@ const router = createRouter({
       name: 'ExchangeRates',
       component: ExchangeRates
     },
+    {
+      path: '/compare',
+      name: 'Compare',
+      component: Compare,
+    },
   ]
 })
 
