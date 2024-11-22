@@ -14,3 +14,18 @@ export default defineConfig({
     }
   }
 })
+
+
+// module.exports = {
+//   devServer: {
+//     proxy: {
+//       '/api': {
+//         target: 'http://localhost:5173',  // Django 서버 주소
+//         changeOrigin: true,
+//         pathRewrite: {
+//           '^/api': ''
+//         }
+//       }
+//     }
+//   }
+// }
