@@ -39,13 +39,20 @@ export const useCounterStore = defineStore('counter', () => {
     // const username = payload.username
     // const password1 = payload.password1
     // const password2 = payload.password2
-    const { username, password1, password2 } = payload
+    const { username, password1, password2, nickname, email, age, gender, phone } = payload
+
+      // 비밀번호 일치 여부 확인
+    if (password1 !== password2) {
+      console.error('비밀번호가 서로 다릅니다.');
+      alert('비밀번호가 서로 다릅니다!!');
+      return; // 서버 요청 중단
+    }
 
     axios({
       method: 'post',
-      url: `${API_URL}/accounts/signup/`,
+      url: `${API_URL}/dj-rest-auth/registration/`,
       data: {
-        username, password1, password2
+        username, password1, password2, nickname, email, age, gender, phone
       }
     })
       .then((res) => {
@@ -67,14 +74,14 @@ export const useCounterStore = defineStore('counter', () => {
 
     axios({
       method: 'post',
-      url: `${API_URL}/accounts/login/`,
+      url: `${API_URL}/dj-rest-auth/login/`,
       data: {
         username, password
       }
     })
       .then((res) => {
         token.value = res.data.key
-        router.push({ name: 'ArticleView' })
+        router.push({ name: 'HomeView' })
         // console.log(res.data)
         // console.log('로그인 성공')
       })

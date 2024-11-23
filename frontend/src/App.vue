@@ -7,9 +7,8 @@
       <Router-link to="/exchange-rates">환율 조회</router-link>
       <RouterLink to="/posts">주변은행</RouterLink>
       <RouterLink to="/posts">금융교육</RouterLink>
-      <RouterLink :to="{ name: 'ArticleView' }">Articles</RouterLink> |
-      <RouterLink :to="{ name: 'SignUpView' }">SignUpView</RouterLink> |
-      <RouterLink :to="{ name: 'LogInView' }">LogInView</RouterLink> | 
+      <RouterLink :to="{ name: 'SignUpView' }">회원가입</RouterLink> |
+      <RouterLink :to="{ name: 'LogInView' }">로그인</RouterLink> | 
       <form @submit.prevent="logOut">
         <input type="submit" value="Logout">
       </form>
@@ -19,8 +18,10 @@
 </template>
 
 <script setup>
-import { RouterView, RouterLink } from 'vue-router'
+
+import { RouterView, RouterLink,useRouter } from 'vue-router'
 import { useCounterStore } from '@/stores/counter'
+
 
 const store = useCounterStore()
 
@@ -28,6 +29,7 @@ const logOut = function () {
   store.logOut()
 }
 </script>
+
 
 <style>
 #app {

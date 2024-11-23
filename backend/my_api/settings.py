@@ -43,15 +43,18 @@ INSTALLED_APPS = [
     'exchange_rate',
     'rest_framework',
     'rest_framework.authtoken',
-    'dj_rest_auth',
-    'corsheaders',
+    
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    
+    'dj_rest_auth',
     'dj_rest_auth.registration',
-    'django.contrib.admin',
+    
+    'corsheaders',
     'django.contrib.auth',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -59,6 +62,20 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID = 1
+
+ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
+
+REST_AUTH = {
+    'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
+}
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
+}
+
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailSerializer',
+}
 
 REST_FRAMEWORK = {
     # Authentication
