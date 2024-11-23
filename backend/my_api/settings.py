@@ -25,6 +25,11 @@ SECRET_KEY = (
     'django-insecure-@fn#327r=8uv%&a25(l(jc-e5ir*pu)v_%cyy*l%u@o)(^fnzs'
 )
 
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+
+ACCOUNT_EMAIL_REQUIRED = False
 
 # 금감원 API 키
 API_KEY = os.getenv('API_KEY')
@@ -32,12 +37,11 @@ API_KEY = os.getenv('API_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
 INSTALLED_APPS = [
-    'articles',
     'accounts',
     'fin_ins',
     'exchange_rate',
@@ -67,6 +71,7 @@ ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
 
 REST_AUTH = {
     'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
+    'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailsSerializer',
 }
 
 REST_AUTH_REGISTER_SERIALIZERS = {
