@@ -11,7 +11,7 @@
       <img src="@/assets/finance-icon.png" alt="금융 아이콘" class="main-image">
       
       <!-- <router-link to="/compare/deposit" class="action-button">
-        금융 상품 확인하러가기
+        금융 상품 확인하러가기  -->
       <!-- <router-link to="/compare/deposit" class="action-button"> -->
         <!-- 금융 상품 확인하러가기
       </router-link> -->

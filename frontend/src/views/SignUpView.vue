@@ -55,6 +55,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useCounterStore } from '@/stores/counter'
+import { useRouter } from 'vue-router'
 
 const username = ref('')
 const nickname = ref('')
@@ -66,6 +67,7 @@ const password1 = ref('')
 const password2 = ref('')
 
 const store = useCounterStore()
+const router = useRouter() 
 
 const signUp = function () {
   const payload = {
@@ -73,12 +75,27 @@ const signUp = function () {
     nickname: nickname.value,
     email: email.value,
     age: age.value,
-    gender: gender.value === 'male' ? 'M' : 'F',
+    gender: gender.value === '' ? 'M' : 'F',
     phone: phone.value,
     password1: password1.value,
     password2: password2.value
   }
+
   store.signUp(payload)
+    .then(() => {
+      // 회원가입 및 로그인 성공 후 팝업 메시지 띄우기
+      const goToLogin = window.confirm('회원가입이 완료되었습니다. 로그인 창으로 이동하시겠습니까?')
+      if (goToLogin) {
+        // 사용자가 "확인"을 선택하면 로그인 페이지로 이동
+        router.push({ name: 'LogInView' })
+      } else {
+        // 사용자가 "취소"를 선택하면 홈 화면으로 이동
+        router.push({ name: 'HomeView' })
+      }
+    })
+    .catch((err) => {
+      console.error('회원가입 실패(view):', err)
+    })
 }
 </script>
 

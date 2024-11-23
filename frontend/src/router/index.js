@@ -3,6 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import CreateView from '@/views/CreateView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import LogInView from '@/views/LogInView.vue'
+import MyPageView from '@/views/MyPageView.vue'
+import Compare from '@/components/Compare.vue'
 import { useCounterStore } from '@/stores/counter'
 import HomeView from '../views/HomeView.vue'
 import MainPage from '../components/MainPage.vue'
@@ -33,6 +35,11 @@ const router = createRouter({
       path: '/login',
       name: 'LogInView',
       component: LogInView
+    },
+    {
+      path: '/myPage',
+      name: 'MyPageView',
+      component: MyPageView
     },
 
     {
