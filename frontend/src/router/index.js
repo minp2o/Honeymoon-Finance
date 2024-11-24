@@ -4,6 +4,7 @@ import CreateView from '@/views/CreateView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import LogInView from '@/views/LogInView.vue'
 import MyPageView from '@/views/MyPageView.vue'
+import LoanView from '@/views/LoanView.vue'
 import Compare from '@/components/Compare.vue'
 import { useCounterStore } from '@/stores/counter'
 import HomeView from '../views/HomeView.vue'
@@ -19,6 +20,12 @@ const router = createRouter({
       path: '/',
       name: 'HomeView',
       component: HomeView
+    },
+
+    {
+      path: '/loan',
+      name: 'LoanView',
+      component: LoanView
     },
 
     {

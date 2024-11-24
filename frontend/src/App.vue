@@ -3,6 +3,7 @@
     <nav>
       <RouterLink to="/">홈</RouterLink> |
       <RouterLink to="/compare">상품조회</RouterLink>
+      <RouterLink to="/loan">전세자금대출조회</RouterLink>
       <RouterLink to="/posts">게시판</RouterLink>
       <RouterLink to="/exchange-rates">환율 조회</RouterLink>
       <RouterLink to="/posts">주변은행</RouterLink>
