@@ -1,53 +1,51 @@
 from django.db import models
+from django.conf import settings
 
 
-class DepositProducts(models.Model):
-    # dcls_month varchar(6) 공시 제출월(YYYYMM)
-    dcls_month = models.CharField(max_length=6)
+class Deposit(models.Model):
+    deposit_code = models.CharField(max_length=100) # fin_prdt_cd 
+    fin_co_no = models.CharField(max_length=100)
+    kor_co_nm = models.CharField(max_length=100)
+    name = models.CharField(max_length=100) # fin_prdt_nm
+    dcls_month = models.CharField(max_length=20)
+    join_way = models.CharField(max_length=100)
+    mtrt_int = models.TextField(blank=True, null=True)
+    spcl_cnd = models.TextField(blank=True, null=True)
+    join_deny = models.IntegerField(blank=True, null=True)
+    join_member = models.TextField(blank=True, null=True)
+    etc_note = models.TextField(blank=True, null=True)
+    max_limit = models.IntegerField(blank=True, null=True)
+    contract_user = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='contract_deposit')
 
-    # fin_prdt_cd text ( unique ) 금융 상품 코드
-    fin_prdt_cd = models.TextField(unique=True)
-    
-    # kor_co_nm text 금융회사명
-    kor_co_nm = models.TextField()
-    
-    # fin_prdt_nm text 금융 상품명
-    fin_prdt_nm = models.TextField()
-    
-    # etc_note text 금융 상품 설명
-    etc_note = models.TextField()
-    
-    # join_deny integer 가입 제한(1: 제한없음, 2:서민전용, 3:일부제한)
-    join_deny = models.IntegerField()
-    
-    # join_member text 가입대상
-    join_member = models.TextField()
-    
-    # join_way text 가입 방법
-    join_way = models.TextField()
-    
-    # spcl_cnd text 우대조건
-    spcl_cnd = models.TextField()
-    
 
-class DepositOptions(models.Model):
-    # dcls_month varchar(6) 공시 제출월(YYYYMM)
-    dcls_month = models.CharField(max_length=6)
+class Saving(models.Model):
+    saving_code = models.CharField(max_length=100) # fin_prdt_cd 
+    fin_co_no = models.CharField(max_length=100)
+    kor_co_nm = models.CharField(max_length=100)
+    name = models.CharField(max_length=100) # fin_prdt_nm
+    dcls_month = models.CharField(max_length=20)
+    join_way = models.CharField(max_length=100)
+    mtrt_int = models.TextField(blank=True, null=True)
+    spcl_cnd = models.TextField(blank=True, null=True)
+    join_deny = models.IntegerField(blank=True, null=True)
+    join_member = models.TextField(blank=True, null=True)
+    etc_note = models.TextField(blank=True, null=True)
+    max_limit = models.IntegerField(blank=True, null=True)
+    contract_user = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='contract_saving')
 
-    # product integer 외래 키(DepositProducts 클래스 참조)
-    product = models.ForeignKey(DepositProducts, on_delete=models.CASCADE)
-    
-    # fin_prdt_cd text 금융 상품 코드
-    fin_prdt_cd = models.TextField()
-    
-    # intr_rate_type_nm varchar(100) 저축금리 유형명
-    intr_rate_type_nm = models.CharField(max_length=100)
-    
-    # intr_rate float 저축금리
-    intr_rate = models.FloatField()
-    
-    # intr_rate2 float 최고우대금리
-    intr_rate2 = models.FloatField()
-    
-    # save_trm integer 저축기간 (단위: 개월)  
-    save_trm = models.IntegerField()
+
+class DepositOption(models.Model):
+    deposit = models.ForeignKey(Deposit, on_delete=models.CASCADE)
+    intr_rate_type_nm = models.CharField(max_length=2)
+    save_trm = models.CharField(max_length=3)
+    intr_rate = models.FloatField(null=True)
+    intr_rate2 = models.FloatField(null=True)
+
+
+class SavingOption(models.Model):
+    saving = models.ForeignKey(Saving, on_delete=models.CASCADE)
+    intr_rate_type_nm = models.CharField(max_length=2)
+    rsrv_type_nm = models.CharField(max_length=10)
+    save_trm = models.CharField(max_length=3)
+    intr_rate = models.FloatField(null=True)
+    intr_rate2 = models.FloatField(null=True)

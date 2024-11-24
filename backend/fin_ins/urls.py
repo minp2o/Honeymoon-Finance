@@ -1,12 +1,38 @@
-from . import views
 from django.urls import path
+from . import views
+
 
 urlpatterns = [
-    # 정기예금 상품 목록 DB에 저장
-    path('save-deposit-products/', views.save_deposit_products),
-    # 전체 정기예금 상품 목록 출력 & 데이터 삽입
-    path('deposit-products/', views.deposit_products),
-    # 특정 상품의 옵션 리스트 출력
-    path('deposit-product-options/<str:fin_prdt_cd>/', views.deposit_product_options),
-    # 가입 기간에 상관없이 최고 금리가 가장 높은 금융 상품과 해당 상품의 옵션 리스트 출력
+    path('deposit_list/', views.deposit_list),
+    path('deposit_list/<str:deposit_code>/', views.deposit_detail),
+    path('deposit_list/<str:deposit_code>/Option_list/', views.depositOption_list),
+    path('deposit_list/<str:deposit_code>/Option_list/<int:depositOption_pk>/', views.depositOption_detail),
+    path('saving_list/', views.saving_list),
+    path('saving_list/<str:saving_code>/', views.saving_detail),
+    path('saving_list/<str:saving_code>/Option_list/', views.savingOption_list),
+    path('saving_list/<str:saving_code>/Option_list/<int:savingOption_pk>/', views.savingOption_detail),
+    path('deposit/6months/', views.get_deposits, {'save_trm': '6'}),
+    path('deposit/12months/', views.get_deposits, {'save_trm': '12'}),
+    path('deposit/24months/', views.get_deposits, {'save_trm': '24'}),
+    path('deposit/36months/', views.get_deposits, {'save_trm': '36'}),
+    path('saving/6months/', views.get_savings, {'save_trm': '6'}),
+    path('saving/12months/', views.get_savings, {'save_trm': '12'}),
+    path('saving/24months/', views.get_savings, {'save_trm': '24'}),
+    path('saving/36months/', views.get_savings, {'save_trm': '36'}),
+    path('deposit/-6months/', views.get_reverse_deposits, {'save_trm': '6'}),
+    path('deposit/-12months/', views.get_reverse_deposits, {'save_trm': '12'}),
+    path('deposit/-24months/', views.get_reverse_deposits, {'save_trm': '24'}),
+    path('deposit/-36months/', views.get_reverse_deposits, {'save_trm': '36'}),
+    path('saving/-6months/', views.get_reverse_savings, {'save_trm': '6'}),
+    path('saving/-12months/', views.get_reverse_savings, {'save_trm': '12'}),
+    path('saving/-24months/', views.get_reverse_savings, {'save_trm': '24'}),
+    path('saving/-36months/', views.get_reverse_savings, {'save_trm': '36'}),
+    path('deposit_list/<str:deposit_code>/contract/', views.contract_deposit, name='contract_deposit'),
+    path('saving_list/<str:saving_code>/contract/', views.contract_saving, name='contract_saving'),
+    path('get_bank_deposit/<str:kor_co_nm>/', views.get_bank_deposit),
+    path('get_bank_saving/<str:kor_co_nm>/', views.get_bank_saving),
+    path('recommend_product_one/', views.recommend_product_one),
+    path('recommend_product_two/', views.recommend_product_two),
+    path('make_financial_data/', views.make_financial_data)
 ]
+    

@@ -306,7 +306,7 @@ export default {
       this.loading = true;
       this.error = null;
       try {
-        const apiKey = process.env.VUE_APP_EXCHANGE_API_KEY;
+        const apiKey = import.meta.env.VUE_APP_EXCHANGE_API_KEY;
         const response = await axios.get(`https://v6.exchangerate-api.com/v6/${apiKey}/latest/USD`);
         this.exchangeRates = response.data.conversion_rates;
       } catch (error) {
