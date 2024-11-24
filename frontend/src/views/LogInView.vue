@@ -1,14 +1,14 @@
 <template>
   <div class="login-container">
-    <h1>로그인 페이지</h1>
+    <h1>로그인</h1>
     <form @submit.prevent="logIn" class="login-form">
       <div class="form-group">
-        <label for="username">아이디:</label>
+        <label for="username">username:</label>
         <input type="text" id="username" v-model.trim="username" required>
       </div>
 
       <div class="form-group">
-        <label for="password">비밀번호:</label>
+        <label for="password">password:</label>
         <input type="password" id="password" v-model.trim="password" required>
       </div>
 

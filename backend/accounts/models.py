@@ -35,3 +35,22 @@ class User(AbstractUser):
             )
         ]
     )
+    has_car = models.BooleanField(default=False)
+    has_home = models.BooleanField(default=False)
+    property = models.BigIntegerField(
+        default=False,
+        validators=[MinValueValidator(0)],
+        help_text="재산 (단위: 원)"
+    )
+    income = models.BigIntegerField(
+        default=False,
+        validators=[MinValueValidator(0)],
+        help_text="연간 소득 (단위: 원)"
+    )
+    in_seoul = models.BooleanField(default=False, help_text="서울 거주 여부")
+    children = models.BooleanField(default=False, help_text="3년 이내 자녀 계획")
+    budget = models.BigIntegerField(
+        default=False,
+        validators=[MinValueValidator(0)],
+        help_text="예산 (단위: 원)"
+    )
