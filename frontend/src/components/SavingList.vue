@@ -44,6 +44,10 @@ const isContractSaving = computed(() => {
 const userStore = useUserStore()
 const router = useRouter()
 
+const goToCompare = () => {
+  router.push({ path: '/compare/saving' });
+};
+
 const makeItems = function (item) {
   const result = {
     'saving_code': item['saving_code'],
@@ -326,8 +330,7 @@ const deleteSavingUser = function () {
               :intr-rate="intrRateS"
               :intr-rate2="intrRate2S"
             /> -->
-            <p class="text-caption">* 개월별 평균 예금 금리는 2023년 11월 기준입니다.</p>
-            <p class="text-caption">* 차트에 없는 이자율은 상품에 존재하지 않는 옵션입니다.</p>
+            <p class="text-caption">* 개월별 평균 예금 금리는 2024년 11월 기준입니다.</p>
           </div>
 
         </v-card-text>
@@ -374,7 +377,7 @@ const deleteSavingUser = function () {
   </div>
 </template>
 
-<style scoped>
+<!-- <style scoped>
 .loading { 
   display: flex;
   height: 80vh;
@@ -394,5 +397,57 @@ tbody > tr:hover {
 
 .table {
   border-radius: 10px;
+}
+</style> -->
+
+<style scoped>
+.loading { 
+  display: flex;
+  height: 80vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.loan-container {
+  width: 80%;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #f0f8ff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: #1e90ff;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.2em;
+}
+
+.table {
+  border-radius: 10px;
+}
+
+tbody > tr {
+  transition: 200ms;
+  cursor: pointer;
+}
+
+tbody > tr:hover {
+  background-color: rgb(247, 250, 253);
+  color: #1089FF;
+}
+
+.saving-item {
+  background-color: #ffffff;
+  border: 1px solid #87cefa;
+  border-radius: 8px;
+  padding: 15px;
+  transition: transform 0.3s ease;
+}
+
+.saving-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(30, 144, 255, 0.2);
 }
 </style>

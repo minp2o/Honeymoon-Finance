@@ -165,16 +165,18 @@ const level = ref(3)
 const mapRef = ref()
 
 onMounted(() => {
-  if (window.kakao && window.kakao.maps) {
-    initMap('init')
-  } else {
-    const script = document.createElement('script')
-
-    script.onload = () => kakao.maps.load(() => initMap('init'))
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${MAP_API_KEY}&libraries=services`
-    document.head.appendChild(script)
-  }
-})
+   const script = document.createElement('script');
+   script.onload = () => {
+     return new Promise((resolve) => {
+       kakao.maps.load(() => {
+         initMap('init'); // 스크립트 로드 후 initMap 호출
+         resolve();
+       });
+     });
+   };
+   script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${MAP_API_KEY}&libraries=services`
+   document.head.appendChild(script);
+ });
 
 const initMap = (state='current') => {
   // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
@@ -519,11 +521,11 @@ const deleteProductUser = function (data) {
         찾기</v-btn>
     </div>
     
-    <!-- <Map
+    <Map
       :width="1200"
       :height="600"
       :key-word="keyword"
-    /> -->
+    />
     <div class="map-container elevation-7 mb-15">
       <v-btn
         variant="text"

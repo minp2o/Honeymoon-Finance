@@ -16,6 +16,7 @@ import MainPage from '../components/MainPage.vue'
 import CurrencyConverter from '../views/CurrencyConverter.vue'
 import ExchangeRates from '../views/ExchangeRates.vue'
 import NotFound from '@/components/NotFound.vue'
+import PostListView from '../views/PostListView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -100,6 +101,16 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       redirect: "/404"
+    },
+    {
+      path: '/map',
+      name: 'MapView',
+      component: MapView
+    },
+    {
+      path: '/posts',
+      name: 'PostListView',
+      component: PostListView
     },
   ]
 })
