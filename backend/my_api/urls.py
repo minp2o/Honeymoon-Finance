@@ -21,9 +21,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('posts/', include('articles.urls')),
     path('loan/', include('loan.urls')),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('finance/', include('fin_ins.urls')),
-    path('exchange/', include('exchange.urls')),
+    path('fin_ins/', include('fin_ins.urls')),
+    path('exchange_rate/', include('exchange_rate.urls')),
 ]
