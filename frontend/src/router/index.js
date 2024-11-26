@@ -17,6 +17,7 @@ import CurrencyConverter from '../views/CurrencyConverter.vue'
 import ExchangeRates from '../views/ExchangeRates.vue'
 import NotFound from '@/components/NotFound.vue'
 import PostListView from '../views/PostListView.vue'
+import ChatBot from '@/components/ChatBot.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +26,12 @@ const router = createRouter({
       path: '/',
       name: 'HomeView',
       component: HomeView
+    },
+
+    {
+      path: '/chatbot',
+      name: 'ChatBot',
+      component: ChatBot
     },
 
     {
