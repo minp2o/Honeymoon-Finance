@@ -36,8 +36,8 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_REQUIRED = False
 
 # 금감원 API 키
-API_KEY = env('API_KEY')
-#API_KEY = os.getenv('API_KEY')
+#API_KEY = env('API_KEY')
+API_KEY = os.getenv('API_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
