@@ -3,12 +3,11 @@
   <header>
     <nav>
       <RouterLink to="/">홈</RouterLink> |
-      <RouterLink to="/compare">상품조회</RouterLink>
+      <RouterLink to="/compare/deposit">상품조회</RouterLink>
       <RouterLink to="/loan">전세자금대출조회</RouterLink>
       <RouterLink to="/posts">게시판</RouterLink>
       <RouterLink to="/exchange-rates">환율 조회</RouterLink>
-      <RouterLink to="/posts">주변은행</RouterLink>
-      <RouterLink to="/posts">금융교육</RouterLink>
+      <RouterLink to="/map">주변은행</RouterLink>
       
       <!-- 로그인되지 않은 상태에서 회원가입/로그인 버튼 표시 -->
       <span v-if="!isLogin">

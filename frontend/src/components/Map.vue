@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { ref, onMounted } from 'vue'
 
 const MAP_API_KEY = import.meta.env.VITE_MAP_API_KEY
@@ -16,13 +16,16 @@ onMounted(() => {
   if (window.kakao && window.kakao.maps) {
     initMap()
   } else {
-    const script = document.createElement('script')
+    const script = document.createElement('script');
 
-    script.onload = () => kakao.maps.load(initMap)
+    script.onload = () => {
+      kakao.maps.load(initMap);
+    };  
+
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${MAP_API_KEY}&libraries=services`
     document.head.appendChild(script)
   }
-})
+});
 
 const initMap = () => {
   // const container = document.getElementById('map')
@@ -120,9 +123,11 @@ const initMap = () => {
 }
 
 const clickCurrentSearch = function () {
-  // 장소 검색 객체를 생성합니다
-
-  initMap()
+  if (window.kakao && window.kakao.maps) {
+    initMap(); // kakao 객체가 정의된 경우에만 호출
+  } else {
+    console.error("Kakao 지도 API가 로드되지 않았습니다.");
+  }
 }
 </script>
 
@@ -142,6 +147,126 @@ const clickCurrentSearch = function () {
         </v-icon>
       현 지도에서 검색</v-btn>
     <div id="map" :style="`width: ${width}px; height: ${height}px;`" class="elevation-5"></div>
+  </div>
+</template>
+
+<style scoped>
+#map {
+  border-radius: 10px;
+}
+
+.map-container {
+  position: relative;
+  border-radius: 10px;
+}
+
+.current-search-btn {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  z-index: 100;
+  transform: translateX(-50%);
+  background-color: white;
+}
+</style> -->
+
+
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const MAP_API_KEY = import.meta.env.VITE_MAP_API_KEY
+
+const props = defineProps({
+  width: Number,
+  height: Number,
+  keyWord: String
+})
+
+const center = ref([37.566826, 126.9786567])
+const level = ref(3)
+
+onMounted(() => {
+   const script = document.createElement('script');
+   script.onload = () => {
+     return new Promise((resolve) => {
+       kakao.maps.load(() => {
+         initMap(); // 스크립트 로드 후 initMap 호출
+         resolve();
+       });
+     });
+   };
+   script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${MAP_API_KEY}&libraries=services`
+   document.head.appendChild(script);
+ });
+
+const initMap = (state='current') => {
+  // kakao.maps가 정의되어 있는지 확인
+  {{ edit_1 }}
+  if (!window.kakao || !window.kakao.maps) {
+    console.error("Kakao 지도 API가 로드되지 않았습니다.");
+    return;
+  }
+
+  const map = new kakao.maps.Map(mapContainer, mapOption);
+  map.setDraggable(true);
+
+  kakao.maps.event.addListener(map, 'center_changed', function() {
+    const levelMap = map.getLevel();
+    level.value = levelMap;
+    const latlng = map.getCenter();
+    center.value = [latlng.getLat(), latlng.getLng()];
+  });
+
+  const ps = new kakao.maps.services.Places(map);
+  ps.categorySearch('BK9', placesSearchCB, { useMapBounds: true });
+
+  function placesSearchCB(data, status, pagination) {
+    if (status === kakao.maps.services.Status.OK) {
+      for (var i = 0; i < data.length; i++) {
+        displayMarker(data[i]);
+      }
+    }
+  }
+
+  function displayMarker(place) {
+    const marker = new kakao.maps.Marker({
+      map: map,
+      position: new kakao.maps.LatLng(place.y, place.x)
+    });
+
+    kakao.maps.event.addListener(marker, 'click', function() {
+      infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+      infowindow.open(map, marker);
+    });
+  }
+}
+
+const clickCurrentSearch = function () {
+  if (window.kakao && window.kakao.maps) {
+    initMap(); // kakao 객체가 정의된 경우에만 호출
+  } else {
+    console.error("Kakao 지도 API가 로드되지 않았습니다.");
+  }
+}
+</script>
+
+<template>
+  <div class="map-container">
+    <v-btn
+      variant="text"
+      color="#1089FF"
+      @click="clickCurrentSearch"
+      class="current-search-btn"
+      rounded="xl"
+      elevation="8"
+      size="large"
+    > 
+      <v-icon class="me-1">
+        mdi-reload
+      </v-icon>
+      현 지도에서 검색
+    </v-btn>
+    <div id="map" :style="`width: ${props.width}px; height: ${props.height}px;`" class="elevation-5"></div>
   </div>
 </template>
 

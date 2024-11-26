@@ -306,7 +306,10 @@ export default {
       this.loading = true;
       this.error = null;
       try {
-        const apiKey = import.meta.env.VUE_APP_EXCHANGE_API_KEY;
+        const apiKey = import.meta.env.VITE_APP_EXCHANGE_API_KEY;
+        if (!apiKey) {
+                throw new Error('API key is not configured');
+            }
         const response = await axios.get(`https://v6.exchangerate-api.com/v6/${apiKey}/latest/USD`);
         this.exchangeRates = response.data.conversion_rates;
       } catch (error) {
@@ -329,71 +332,100 @@ export default {
 
 <style scoped>
 .currency-converter {
-  max-width: 600px;
-  margin: auto;
+  width: 80%;
+  margin: 30px auto;
   padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #f0f8ff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
+  color: #1e90ff;
   text-align: center;
-  color: #333;
+  margin-bottom: 30px;
+  font-size: 2.2em;
 }
 
 p {
   text-align: center;
-  color: #666;
+  color: #4169e1;
+  font-size: 1.2em;
+  margin: 20px 0;
 }
 
 .converter-form {
+  background-color: #ffffff;
+  border: 1px solid #87cefa;
+  border-radius: 8px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+}
+
+.converter-form:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(30, 144, 255, 0.2);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
-.label {
+.form-group label {
+  color: #1e90ff;
   font-weight: bold;
 }
 
 .input-field,
 .select-field {
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 12px;
+  border: 1px solid #87cefa;
   border-radius: 4px;
   font-size: 16px;
+  background-color: #e6f3ff;
 }
 
 .convert-button {
-  padding: 10px;
-  background-color: #007BFF;
+  padding: 12px;
+  background-color: #1e90ff;
   color: white;
   border: none;
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .convert-button:hover {
-  background-color: #0056b3;
+  background-color: #4169e1;
 }
 
 .loading-message,
 .error-message {
   text-align: center;
-  color: #ff0000;
+  color: #4169e1;
+  font-size: 1.2em;
+  margin: 20px 0;
 }
 
 .result {
-  text-align: center;
-  font-size: 18px;
-  font-weight: bold;
+  background-color: #ffffff;
+  border: 1px solid #87cefa;
+  border-radius: 8px;
+  padding: 15px;
   margin-top: 20px;
+  text-align: center;
+}
+
+.result h2 {
+  color: #4169e1;
+  font-size: 1.3em;
+  margin: 0;
 }
 </style>

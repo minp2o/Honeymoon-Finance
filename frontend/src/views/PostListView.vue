@@ -9,7 +9,7 @@ const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
 
-const queryPage = route.query?.page
+const queryPage = route.query?.page || 1;
 const page = ref(Number(queryPage))
 
 watch(page, () => {
