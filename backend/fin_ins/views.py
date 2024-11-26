@@ -15,12 +15,11 @@ from .serializers import *
 from .models import *
 from accounts.serializers import *
 
-
+DEPOSIT_API_URL = f'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json?auth={settings.API_KEY}&topFinGrpNo=020000&pageNo=1'
+SAVING_API_URL = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={settings.API_KEY}&topFinGrpNo=020000&pageNo=1'
 
 @api_view(['GET'])
 def make_financial_data(request):
-    DEPOSIT_API_URL = f'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json?auth={settings.API_KEY}&topFinGrpNo=020000&pageNo=1'
-    SAVING_API_URL = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={settings.API_KEY}&topFinGrpNo=020000&pageNo=1'
 
     # Deposit API 요청
     deposit_res = requests.get(DEPOSIT_API_URL)
@@ -45,9 +44,11 @@ def make_financial_data(request):
 
 @api_view(['GET']) # id 순
 def deposit_list(request):
-    deposits = Deposit.objects.all()
-    serializer = DepositSerializer(deposits, many=True)
-    return Response(serializer.data)
+    api_key = settings.API_KEY
+    url = f'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json?auth={api_key}&topFinGrpNo=020000&pageNo=1'
+
+    response = requests.get(url).json()
+    return Response(response)
 
 
 @api_view(['GET'])
@@ -57,6 +58,7 @@ def deposit_detail(request, deposit_code):
         serializer = DepositSerializer(deposit)
         return Response(serializer.data)    
     
+
 
 @api_view(['GET'])
 def depositOption_list(request, deposit_code):
@@ -80,9 +82,10 @@ def depositOption_detail(request, deposit_code, depositOption_pk):
 
 @api_view(['GET']) # id 순
 def saving_list(request):
-    savings = Saving.objects.all()
-    serializer = SavingSerializer(savings, many=True)
-    return Response(serializer.data)
+    api_key = settings.API_KEY
+    url = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={api_key}&topFinGrpNo=020000&pageNo=1'
+    response = requests.get(url).json()
+    return Response(response)
 
 
 @api_view(['GET'])
@@ -111,73 +114,73 @@ def savingOption_detail(request, saving_code, savingOption_pk):
         return Response(serializer.data)
     
 
-# 6개월~36개월
-@api_view(['GET'])
-def get_deposits(request, save_trm):
-    deposits = Deposit.objects.filter(depositoption__save_trm=save_trm).order_by('depositoption__intr_rate')
+# # 6개월~36개월
+# @api_view(['GET'])
+# def get_deposits(request, save_trm):
+#     deposits = Deposit.objects.filter(depositoption__save_trm=save_trm).order_by('depositoption__intr_rate')
 
-    serializer = DepositSerializer(deposits, many=True)
-    return Response(serializer.data)
-
-
-@api_view(['GET'])
-def get_savings(request, save_trm):
-    savings = Saving.objects.filter(savingoption__save_trm=save_trm).order_by('savingoption__intr_rate')
-
-    serializer = SavingSerializer(savings, many=True)
-    return Response(serializer.data)
+#     serializer = DepositSerializer(deposits, many=True)
+#     return Response(serializer.data)
 
 
-@api_view(['GET'])
-def get_reverse_deposits(request, save_trm):
-    deposits = Deposit.objects.filter(depositoption__save_trm=save_trm).order_by('-depositoption__intr_rate')
+# @api_view(['GET'])
+# def get_savings(request, save_trm):
+#     savings = Saving.objects.filter(savingoption__save_trm=save_trm).order_by('savingoption__intr_rate')
 
-    serializer = DepositSerializer(deposits, many=True)
-    return Response(serializer.data)
-
-
-@api_view(['GET'])
-def get_reverse_savings(request, save_trm):
-    savings = Saving.objects.filter(savingoption__save_trm=save_trm).order_by('-savingoption__intr_rate')
-
-    serializer = SavingSerializer(savings, many=True)
-    return Response(serializer.data)
+#     serializer = SavingSerializer(savings, many=True)
+#     return Response(serializer.data)
 
 
-@api_view(['PUT'])
-@permission_classes([IsAuthenticated])
-def contract_deposit(request, deposit_code):
-    deposit = get_object_or_404(Deposit, deposit_code=deposit_code)
-    if request.user in deposit.contract_user.all():
-        deposit.contract_user.remove(request.user)
-    else:
-        deposit.contract_user.add(request.user)
-    serializer = ContractDepositSerializer(deposit)
-    return Response(serializer.data)
+# @api_view(['GET'])
+# def get_reverse_deposits(request, save_trm):
+#     deposits = Deposit.objects.filter(depositoption__save_trm=save_trm).order_by('-depositoption__intr_rate')
+
+#     serializer = DepositSerializer(deposits, many=True)
+#     return Response(serializer.data)
 
 
-@api_view(['GET','POST','DELETE'])
-@permission_classes([IsAuthenticated])
-def contract_deposit(request, deposit_code):
-    deposit = get_object_or_404(Deposit, deposit_code=deposit_code)
-    if request.method == 'GET':
-        serializer = ContractDepositSerializer(deposit)
-        return Response(serializer.data)
+# @api_view(['GET'])
+# def get_reverse_savings(request, save_trm):
+#     savings = Saving.objects.filter(savingoption__save_trm=save_trm).order_by('-savingoption__intr_rate')
 
-    elif request.method == 'DELETE':
-        if request.user in deposit.contract_user.all():
-            deposit.contract_user.remove(request.user)
-            return Response({ "detail": "삭제되었습니다." }, status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response({ "detail": "삭제할 항목이 없습니다." }, status=status.HTTP_404_NOT_FOUND)
+#     serializer = SavingSerializer(savings, many=True)
+#     return Response(serializer.data)
+
+
+# @api_view(['PUT'])
+# @permission_classes([IsAuthenticated])
+# def contract_deposit(request, deposit_code):
+#     deposit = get_object_or_404(Deposit, deposit_code=deposit_code)
+#     if request.user in deposit.contract_user.all():
+#         deposit.contract_user.remove(request.user)
+#     else:
+#         deposit.contract_user.add(request.user)
+#     serializer = ContractDepositSerializer(deposit)
+#     return Response(serializer.data)
+
+
+# @api_view(['GET','POST','DELETE'])
+# @permission_classes([IsAuthenticated])
+# def contract_deposit(request, deposit_code):
+#     deposit = get_object_or_404(Deposit, deposit_code=deposit_code)
+#     if request.method == 'GET':
+#         serializer = ContractDepositSerializer(deposit)
+#         return Response(serializer.data)
+
+#     elif request.method == 'DELETE':
+#         if request.user in deposit.contract_user.all():
+#             deposit.contract_user.remove(request.user)
+#             return Response({ "detail": "삭제되었습니다." }, status=status.HTTP_204_NO_CONTENT)
+#         else:
+#             return Response({ "detail": "삭제할 항목이 없습니다." }, status=status.HTTP_404_NOT_FOUND)
         
-    elif request.method == 'POST':
-        if request.user not in deposit.contract_user.all():
-            deposit.contract_user.add(request.user)
-            serializer = ContractDepositSerializer(deposit, data=request.data, partial=True)
+#     elif request.method == 'POST':
+#         if request.user not in deposit.contract_user.all():
+#             deposit.contract_user.add(request.user)
+#             serializer = ContractDepositSerializer(deposit, data=request.data, partial=True)
 
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return Response({ "detail": "상품이 추가되었습니다." }, status=status.HTTP_200_OK)
-        else:
-            return Response({ "detail": "이미 상품이 존재합니다." }, status=status.HTTP_400_BAD_REQUEST)
+#             if serializer.is_valid(raise_exception=True):
+#                 serializer.save()
+#                 return Response({ "detail": "상품이 추가되었습니다." }, status=status.HTTP_200_OK)
+#         else:
+#             return Response({ "detail": "이미 상품이 존재합니다." }, status=status.HTTP_400_BAD_REQUEST)

@@ -5,7 +5,6 @@
       <RouterLink to="/">홈</RouterLink> |
       <RouterLink to="/compare/deposit">상품조회</RouterLink>
       <RouterLink to="/loan">전세자금대출조회</RouterLink>
-      <RouterLink to="/posts">게시판</RouterLink>
       <RouterLink to="/exchange-rates">환율 조회</RouterLink>
       <RouterLink to="/map">주변은행</RouterLink>
       
@@ -76,7 +75,7 @@ const logOut = function () {
 }
 
 nav {
-  padding: 30px;
+  padding-top: 30px;
   text-align: center;
 }
 
@@ -84,7 +83,7 @@ nav a {
   font-weight: bold;
   color: #2c3e50;
   text-decoration: none;
-  margin: 0 10px;
+  margin: 0 15px;
 }
 
 nav a.router-link-exact-active {
@@ -105,7 +104,7 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 .help-button {
-  position: absolute;
+  position: fixed;
   right: 30px;
   top: 30px;
   background-color: #42b983;
