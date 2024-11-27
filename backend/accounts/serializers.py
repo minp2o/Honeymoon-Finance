@@ -83,3 +83,11 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
         model = User
         fields = ('pk', *extra_fields)
         read_only_fields = ('email',)
+        
+        
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+                  'has_car', 'has_home', 'property', 'income', 'in_seoul',
+                  'children', 'budget']

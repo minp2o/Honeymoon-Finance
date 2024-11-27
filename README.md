@@ -73,15 +73,47 @@
 - Frontend - Vue.js
 
 ```
-
+frontend
+├─node_modules
+├─public
+└─src
+    │  App.vue
+    │  main.js
+    ├─api
+    ├─assets
+    ├─components
+    ├─router
+    ├─stores
+    └─views
+        │  AboutView.vue
+        │  CreateView.vue
+        │  CurrencyConverter.vue
+        │  DetailView.vue
+        │  ExchangeRates.vue
+        │  HomeView.vue
+        │  LogInView.vue
+        │  SignUpView.vue 
+        └─finances
+│  .gitignore
+│  index.html
+│  jsconfig.json
+│  package-lock.json
+│  package.json
+└─vite.config.js
 ```
 - Backend - Django
 ```
 backend
 ├─accounts
-├─api
-├─articles
-└─finlife
+├─exchange_rate
+├─fin_ins
+├─my_api
+└─venv
+│
+│  db.sqlite3
+│  manage.py
+│  make_data.py
+└─requirements.txt
 ```
 
 <br/>
@@ -170,17 +202,25 @@ backend
 
 ## API 입력 위치
 ```
-Backend
-카카오맵 : frontend\src\components\MapComponent.vue
-변수명 const KAKAO_KEY에 할당
-API키를 .env에서 찾아서 입력
-api 레퍼런스 주소 : https://apis.map.kakao.com/web/guide/ JavaScript  키
+Backend APIs
 
-Frontend
-금융감독원 : backend\api\settings.py
-변수명 API_KEY에 할당
-API키를 .env에서 찾아서 입력
-api 레퍼런스 주소
-- 예금 : https://finlife.fss.or.kr/finlife/api/fdrmDpstApi/list.do?menuNo=700052
-- 적금 : https://finlife.fss.or.kr/finlife/api/fdrmDpstApi/list.do?menuNo=700052
+금융감독원 API
+위치: backend/my_api/settings.py
+환경변수: .env
+엔드포인트:
+예금상품: http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json
+적금상품: http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json
+
+Frontend APIs
+
+카카오맵
+위치: frontend/src/components/Map.vue
+환경변수: .env
+변수명: MAP_API_KEY
+엔드포인트: //dapi.kakao.com/v2/maps/sdk.js
+파라미터: autoload=false&appkey=${MAP_API_KEY}&libraries=services
+Exchange Rate API
+위치: frontend/src/views/ExchageRates.vue
+환경변수: .env
+엔드포인트: https://v6.exchangerate-api.com/v6/
 ```
