@@ -6,10 +6,13 @@ import LogInView from '@/views/LogInView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import LoanView from '@/views/LoanView.vue'
 import Compare from '@/components/Compare.vue'
+
 import CompareListView from '@/views/CompareListView.vue'
 import DepositList from '@/components/DepositList.vue'
 import SavingList from '@/components/SavingList.vue'
 import MapView from '@/views/MapView.vue'
+
+import FinancialSurvey from '@/views/FinancialSurvey.vue'
 import { useCounterStore } from '@/stores/counter'
 import HomeView from '../views/HomeView.vue'
 import MainPage from '../components/MainPage.vue'
@@ -33,6 +36,16 @@ const router = createRouter({
       name: 'ChatBot',
       component: ChatBot
     },
+    {
+
+      path: '/survey',
+      name: 'FinancialSurvey',
+      component: FinancialSurvey
+
+
+    },
+
+    
 
     {
       path: '/loan',

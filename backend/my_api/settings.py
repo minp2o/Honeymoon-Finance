@@ -36,8 +36,8 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_REQUIRED = False
 
 # 금감원 API 키
-API_KEY = env('API_KEY')
-#API_KEY = os.getenv('API_KEY')
+#API_KEY = env('API_KEY')
+API_KEY = os.getenv('API_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -79,6 +79,8 @@ ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
 REST_AUTH = {
     'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
     'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailsSerializer',
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'my-app-auth',
 }
 
 REST_AUTH_REGISTER_SERIALIZERS = {
@@ -93,6 +95,8 @@ REST_FRAMEWORK = {
     # Authentication
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ],
     # permission
     'DEFAULT_PERMISSION_CLASSES': [

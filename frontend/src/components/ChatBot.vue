@@ -1,4 +1,5 @@
 <template>
+
     <div class="chat-container">
         <h1 id="title">무엇이든 물어보세요!</h1>
       <div class="chat-messages">
@@ -9,10 +10,11 @@
       <div class="chat-input">
         <input v-model="userInput" @keyup.enter="sendMessage" placeholder="메시지를 입력하세요...">
         <button @click="sendMessage">전송</button>
+
       </div>
     </div>
   </template>
-  
+
   <script>
   import axios from 'axios';
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
@@ -132,3 +134,4 @@ button:hover {
 }
 </style>
   
+
