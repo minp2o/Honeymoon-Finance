@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('posts/', include('articles.urls')),
     path('loan/', include('loan.urls')),
+    path('accounts/', include('accounts.urls')),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     path('fin_ins/', include('fin_ins.urls')),

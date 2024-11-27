@@ -1,414 +1,101 @@
-<script setup>
-import { ref, onMounted, computed, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/users'
-// import BarChartDetail from '@/components/BarChartDetail.vue'
-import axios from 'axios'
-
-const headers = [
-  { title: '공시 제출일', align: 'start', sortable: false, width:'10%',key: 'dcls_month' },
-  { title: '금융회사명', align: 'start', sortable: false, key: 'kor_co_nm' },
-  { title: '상품명', align: 'center', sortable: false, width:'32%', key: 'name' },
-  { title: '6개월 (Click to sort)', align: 'end', width:'12%', key: '6month' },
-  { title: '12개월 (Click to sort)', align: 'end', width:'12%', key: '12month' },
-  { title: '24개월 (Click to sort)', align: 'end',  width:'12%', key: '24month' },
-  { title: '36개월 (Click to sort)', align: 'end', width:'12%', key: '36month' },
-]
-
-const results = ref()
-const savings = ref([])
-const savingLength = computed(() => {
-  return savings.value.length
-})
-const banks = ref(['전체 보기'])
-const selectedBank = ref('전체 보기')
-const selectedSavingSimple = ref()
-const selectedSaving = ref()
-const selectedSavingCode = computed(() => {
-  return selectedSavingSimple.value?.['saving_code']
-})
-const dialog = ref(false)
-
-const averageIntrRate = [2.78, 3.62, 3.57, 3.52]
-const intrRateF = ref([null, null, null, null])
-const intrRate2F = ref([null, null, null, null])
-const intrRateS = ref([null, null, null, null])
-const intrRate2S = ref([null, null, null, null])
-
-const selectedTypeRsrv = ref('자유적립식')
-
-const isContractSaving = computed(() => {
-  return userStore.userInfo?.contract_saving.some(e => e['saving_code'] === selectedSavingCode.value)
-})
-
-const userStore = useUserStore()
-const router = useRouter()
-
-const goToCompare = () => {
-  router.push({ path: '/compare/saving' });
-};
-
-const makeItems = function (item) {
-  const result = {
-    'saving_code': item['saving_code'],
-    'dcls_month': item['dcls_month'],
-    'kor_co_nm': item['kor_co_nm'],
-    'name': item['name'],
-    '6month': null,
-    '12month': null,
-    '24month': null,
-    '35month': null,
-  }
-
-  for (const option of item['savingoption_set']) {
-    const saveTrm = option['save_trm']
-    const rsrvTypeNm = option['rsrv_type_nm']
-
-    if (rsrvTypeNm === selectedTypeRsrv.value) {
-      if (saveTrm === "6") {
-        result['6month'] = option['intr_rate']
-      } else if (saveTrm === "12") {
-        result['12month'] = option['intr_rate']
-      } else if (saveTrm === "24") {
-        result['24month'] = option['intr_rate']
-      } else if (saveTrm === "36") {
-        result['36month'] = option['intr_rate']
-      }
-    }
-  }
-
-  return result
-}
-
-const getAllSaving = function () {
-  axios({
-    method: 'get',
-    url: `${userStore.API_URL}/fin_ins/saving_list/`
-  })
-    .then((res) => {
-      results.value = res.data
-      for (const item of results.value){
-        savings.value.push(makeItems(item))
-        if (!banks.value.includes(item['kor_co_nm'])) {
-          banks.value.push(item['kor_co_nm'])
-        }
-      }
-      // console.log(savings.value)
-      // console.log(banks.value)
-    })
-}
-
-onMounted(() => {
-  getAllSaving()
-})
-
-const clickBank = function () {
-  if (selectedBank.value === '전체 보기') {
-    getAllSaving()
-  } else {
-    axios({
-      method: 'get',
-      url: `${userStore.API_URL}/fin_ins/get_bank_saving/${selectedBank.value}/`
-    })
-      .then((res) => {
-        savings.value = []
-        const results = res.data
-        for (const item of results){
-          savings.value.push(makeItems(item))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
-}
-
-watch(selectedTypeRsrv, () => {
-  savings.value = []
-  selectedBank.value = '전체 보기'
-  for (const item of results.value){
-    savings.value.push(makeItems(item))
-    if (!banks.value.includes(item['kor_co_nm'])) {
-      banks.value.push(item['kor_co_nm'])
-    }
-  }
-})
-
-const close = function () {
-  dialog.value = false
-}
-
-const clickRow = function (data) {
-  // router.push({ name: 'savingDetail', params: { savingCode: data['saving_code']}})
-  selectedSavingSimple.value = data
-  intrRateF.value = []
-  intrRate2F.value = []
-  intrRateS.value = []
-  intrRate2S.value = []
-  getSaving()
-  dialog.value = true
-}
-
-const getSaving = function () {
-  const savingCode = selectedSavingSimple.value['saving_code']
-  axios({
-    method: 'get',
-    url: `${userStore.API_URL}/fin_ins/saving_list/${selectedSavingCode.value}/`
-  })
-    .then((res) => {
-      const data = res.data
-      selectedSaving.value = {
-        '가입자 수 (MYFI 기준)': data.contract_user.length,
-        '공시 제출월': data['dcls_month'],
-        '금융 회사명': data['kor_co_nm'],
-        '금융 상품명': data['name'],
-        '가입 방법': data['join_way'],
-        '만기 후 이자율': data['mtrt_int'],
-        '우대 조건': data['spcl_cnd'],
-        '가입 대상': data['join_member'],
-        '가입 제한': data['join_deny'] === 1 ? '제한없음' : data['join_deny'] === 2 ? '서민전용' : '일부제한',
-        '최고 한도': data['max_limit'],
-        '기타 유의사항': data['etc_note']
-      }
-
-      const optionList = res.data.savingoption_set
-
-      for (const option of optionList) {
-        if (option.rsrv_type_nm === '자유적립식') {
-          if (option.save_trm === "6") {
-            intrRateF.value[0] = option.intr_rate
-            intrRate2F.value[0] = option.intr_rate2
-          } else if (option.save_trm === "12") {
-            intrRateF.value[1] = option.intr_rate
-            intrRate2F.value[1] = option.intr_rate2
-          } else if (option.save_trm === "24") {
-            intrRateF.value[2] = option.intr_rate
-            intrRate2F.value[2] = option.intr_rate2
-          } else if (option.save_trm === "36") {
-            intrRateF.value[3] = option.intr_rate
-            intrRate2F.value[3] = option.intr_rate2
-          }
-        } else {
-          if (option.save_trm === "6") {
-            intrRateS.value[0] = option.intr_rate
-            intrRate2S.value[0] = option.intr_rate2
-          } else if (option.save_trm === "12") {
-            intrRateS.value[1] = option.intr_rate
-            intrRate2S.value[1] = option.intr_rate2
-          } else if (option.save_trm === "24") {
-            intrRateS.value[2] = option.intr_rate
-            intrRate2S.value[2] = option.intr_rate2
-          } else if (option.save_trm === "36") {
-            intrRateS.value[3] = option.intr_rate
-            intrRate2S.value[3] = option.intr_rate2
-          }
-        }
-      }
-
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
-const addSavingUser = function () {
-  axios({
-    method: 'post',
-    url: `${userStore.API_URL}/fin_ins/saving_list/${selectedSavingCode.value}/contract/`,
-    headers: {
-      Authorization: `Token ${userStore.token}`
-    }
-  })
-    .then((res) => {
-      userStore.getUserInfo(userStore.userInfo.username)
-      const answer = window.confirm('저장이 완료되었습니다.\n가입 상품 관리 페이지로 가시겠습니까?')
-      if (answer) {
-        router.push({ name: 'productManage', params: { username: userStore.userInfo.username }})
-      }
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
-const deleteSavingUser = function () {
-  axios({
-    method: 'delete',
-    url: `${userStore.API_URL}/fin_ins/saving_list/${selectedSavingCode.value}/contract/`,
-    headers: {
-      Authorization: `Token ${userStore.token}`
-    }
-  })
-    .then((res) => {
-      userStore.getUserInfo(userStore.userInfo.username)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
-</script>
-
 <template>
-  <div>
-    <header class="d-flex justify-space-between">
-      <h1><span class="color">정기적금</span> 검색하기</h1>
-      <div class="w-50 d-flex align-center">
-        <v-btn-toggle
-          v-model="selectedTypeRsrv"
-          variant="outlined"
-          color="#1089FF"
-          group
-          class="mb-5 mx-5"
-        >
-          <v-btn value="자유적립식">
-            자유 적금
-          </v-btn>
-          <v-btn value="정액적립식">
-            정기 적금
-          </v-btn>
-        </v-btn-toggle>
+  <div class="saving-container">
+    <h1>적금 상품 목록</h1>
+    <h4 id="period">저축 기간</h4>
 
-        <v-select
-          variant="outlined"
-          color="#1089FF"
-          label="은행"
-          :items="banks"
-          v-model="selectedBank"
-          @update:modelValue="clickBank"
-        ></v-select>
+    <div class="sorting-buttons">
+      <button v-for="period in savingPeriods" :key="period" @click="sortBySavingPeriod(period)">
+        {{ period }}개월
+      </button>
+    </div>
+
+    <div v-if="loading" class="loading-message">데이터를 불러오는 중입니다...</div>
+
+    <div v-else-if="error" class="error-message">데이터를 불러오는 중 오류가 발생했습니다: {{ error }}</div>
+
+    <div v-else-if="filteredSavingList.length > 0" class="saving-list">
+      <div v-for="(saving, index) in filteredSavingList" :key="index" class="saving-item">
+        <h2>{{ saving.kor_co_nm }} - {{ saving.fin_prdt_nm }}</h2>
+        <p><strong>가입 방법:</strong> {{ saving.join_way }}</p>
+        <p><strong>가입 제한:</strong> {{ saving.join_deny }}</p>
+        <p><strong>가입 대상:</strong> {{ saving.join_member }}</p>
+        <p><strong>기타 유의사항:</strong> {{ saving.etc_note }}</p>
+        <p><strong>만기 후 이자율:</strong> {{ saving.mtrt_int }}</p>
+        <p><strong>특별 조건:</strong> {{ saving.spcl_cnd }}</p>
+
+        <div class="saving-options">
+          <h3>적금 옵션</h3>
+          <div v-for="(option, idx) in getSavingOptions(saving.fin_prdt_cd)" :key="idx" class="saving-option-item">
+            <p><strong>저축 기간:</strong> {{ option.save_trm }}</p>
+            <p><strong>적립 유형:</strong> {{ option.rsrv_type_nm }}</p>
+          </div>
+        </div>
       </div>
-      
-    </header>
-    <v-divider class="my-3"></v-divider>
+    </div>
 
-    <v-dialog v-model="dialog" width="800">
-      <v-card v-if="selectedSaving" class="py-5 px-3">
-        <v-card-title class="d-flex align-center justify-space-between">
-          <h3>{{ selectedSaving['금융 상품명'] }}</h3>
-          <div v-if="userStore.isLogin">
-            <v-btn
-              v-if="isContractSaving"
-              color="red"
-              variant="flat"
-              @click.prevent="deleteSavingUser"
-            >가입 취소하기</v-btn>
-            <v-btn
-              v-else
-              color="#1089FF"
-              variant="flat"
-              @click.prevent="addSavingUser"
-            >가입하기</v-btn>
-          </div>
-        </v-card-title>
-
-        <v-card-text>
-          <v-table>
-            <tbody>
-              <tr
-                v-for="(value, key) in selectedSaving"
-                :key="key"
-              >
-                <td width="28%" class="font-weight-bold">{{ key }}</td>
-                <td v-if="key === '최고 한도'">{{ value?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
-                <td v-else>{{ value }}</td>
-              </tr>
-            </tbody>
-          </v-table>
-          <v-divider class="my-3"></v-divider>
-
-          <div class="mx-auto">
-            <!-- <BarChartDetail
-              :title="`${selectedSavingSimple.name} (자유적립식)`"
-              :average-intr-rate="averageIntrRate"
-              :intr-rate="intrRateF"
-              :intr-rate2="intrRate2F"
-            />
-            <BarChartDetail
-              :title="`${selectedSavingSimple.name} (정액적립식)`"
-              :average-intr-rate="averageIntrRate"
-              :intr-rate="intrRateS"
-              :intr-rate2="intrRate2S"
-            /> -->
-            <p class="text-caption">* 개월별 평균 예금 금리는 2024년 11월 기준입니다.</p>
-          </div>
-
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="#1089FF" variant="text" @click="close">
-            닫기
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-data-table-virtual
-      v-if="savingLength !== 0"
-      :headers="headers"
-      fixed-header
-      :items-length="savingLength"
-      :items="savings"
-      item-value="saving_code"
-      height="600"
-      class="table elevation-6"
-    >
-      <template v-slot:item="{ item }">
-        <tr @click="clickRow(item)">
-          <td>{{ item['dcls_month'] }}</td>
-          <td>{{ item['kor_co_nm'] }}</td>
-          <td align="center">{{ item['name'] }}</td>
-          <td align="center">{{ item['6month'] }}</td>
-          <td align="center">{{ item['12month'] }}</td>
-          <td align="center">{{ item['24month'] }}</td>
-          <td align="center">{{ item['36month'] }}</td>
-        </tr>
-      </template>
-    </v-data-table-virtual>
-    
-    <div v-else class="loading">
-      <v-progress-circular
-        color="#1089FF"
-        indeterminate
-        size="80"
-        ></v-progress-circular>
+    <div v-else class="no-data">
+      <p>적금 상품을 찾을 수 없습니다.</p>
     </div>
   </div>
 </template>
 
-<!-- <style scoped>
-.loading { 
-  display: flex;
-  height: 80vh;
-  align-items: center;
-  justify-content: center;
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import axios from 'axios'
+
+const savings = ref(null)
+const loading = ref(true)
+const error = ref(null)
+const selectedPeriod = ref(null)
+
+const savingPeriods = [6, 12, 18, 24, 30, 36]
+
+const savingList = computed(() => savings.value?.result?.baseList || [])
+const savingOptions = computed(() => savings.value?.result?.optionList || [])
+
+const filteredSavingList = computed(() => {
+  if (!selectedPeriod.value) return savingList.value
+  return savingList.value.filter(saving => {
+    const options = getSavingOptions(saving.fin_prdt_cd)
+    return options.some(option => parseInt(option.save_trm) === selectedPeriod.value)
+  })
+})
+
+const getSavingOptions = (finPrdtCd) => {
+  return savingOptions.value.filter(option => option.fin_prdt_cd === finPrdtCd)
 }
 
-tbody > tr {
-  transition: 200ms;
-  cursor: pointer;
+const sortBySavingPeriod = (period) => {
+  selectedPeriod.value = period
 }
 
-tbody > tr:hover {
-  background-color: rgb(247, 250, 253);
-  color: #1089FF;
+const fetchSavingData = async () => {
+  try {
+    const response = await axios.get('http://127.0.0.1:8000/fin_ins/saving_list/')
+    console.log('Fetched savings:', response.data)
+    savings.value = response.data
+  } catch (err) {
+    error.value = err.message
+    console.error('API 요청 오류:', err)
+  } finally {
+    loading.value = false
+  }
 }
 
-.table {
-  border-radius: 10px;
-}
-</style> -->
+onMounted(() => {
+  fetchSavingData()
+})
+</script>
 
 <style scoped>
-.loading { 
-  display: flex;
-  height: 80vh;
-  align-items: center;
-  justify-content: center;
+#period{
+  text-align: center;
+  padding-bottom: 10px;
+  color: #1e90ff;
+  
 }
 
-.loan-container {
+.saving-container {
   width: 80%;
   margin: 30px auto;
   padding: 20px;
@@ -424,18 +111,19 @@ h1 {
   font-size: 2.2em;
 }
 
-.table {
-  border-radius: 10px;
+.loading-message,
+.error-message,
+.no-data {
+  text-align: center;
+  color: #4169e1;
+  font-size: 1.2em;
+  margin: 20px 0;
 }
 
-tbody > tr {
-  transition: 200ms;
-  cursor: pointer;
-}
-
-tbody > tr:hover {
-  background-color: rgb(247, 250, 253);
-  color: #1089FF;
+.saving-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
 }
 
 .saving-item {
@@ -449,5 +137,66 @@ tbody > tr:hover {
 .saving-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(30, 144, 255, 0.2);
+}
+
+.saving-item h2 {
+  color: #4169e1;
+  font-size: 1.3em;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #87cefa;
+  padding-bottom: 5px;
+}
+
+.saving-item p {
+  margin: 8px 0;
+  color: #333;
+}
+
+.saving-item strong {
+  color: #1e90ff;
+}
+
+.saving-options {
+  background-color: #e6f3ff;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 15px;
+}
+
+.saving-options h3 {
+  color: #4169e1;
+  font-size: 1.1em;
+  margin-bottom: 10px;
+}
+
+.saving-option-item {
+  border-bottom: 1px solid #b0e0e6;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+.saving-option-item:last-child {
+  border-bottom: none;
+}
+
+.sorting-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.sorting-buttons button {
+  background-color: #4169e1;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin: 0 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sorting-buttons button:hover {
+  background-color: #1e90ff;
 }
 </style>

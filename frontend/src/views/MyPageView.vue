@@ -8,9 +8,9 @@
       <p><strong>전화번호:</strong> {{ user.phone }}</p>
 
       
-      <!-- 사용자에게 추가 정보를 보여주려면 다음과 같이 확장할 수 있습니다. -->
       <p v-if="user.age"><strong>나이:</strong> {{ user.age }}</p>
       <p v-if="user.gender"><strong>성별:</strong> {{ user.gender }}</p>
+      <button @click="goToFinancialSurvey" class="survey-button">금융 설문하기</button>
 
     </div>
     <div v-else class="login-prompt">
@@ -61,6 +61,11 @@ const fetchUserProfile = function () {
   } else {
     router.push({ name: 'LogInView' })
   }
+}
+
+// 금융 설문 페이지로 이동하는 함수
+const goToFinancialSurvey = () => {
+  router.push({ name: 'FinancialSurvey' }) 
 }
 
 
